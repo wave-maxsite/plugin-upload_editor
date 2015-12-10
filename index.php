@@ -11,7 +11,7 @@
 # функция автоподключения плагина
 function upload_editor_autoload()
 {
-	if (mso_check_allow('admin_files'))
+	if (is_login() && mso_check_allow('admin_files'))
 	{
 		mso_hook_add('new_page', 'upload_editor_new_page');
 		if (mso_segment(2) == 'page_new')
@@ -78,10 +78,10 @@ function upload_editor_js($out)
 {
 	global $MSO;
 	$upload_div = '';
-	$upload_btn = '';
 	$current_dir = mso_get_option('plugin_upload_editor', 'plugins', Array('uploads_temp_folder' => 'tempfiles'));
 	$current_dir = $current_dir['uploads_temp_folder'];
-	$ajax_path = getinfo('ajax') . base64_encode('plugins/upload_editor/upload-ajax.php');
+	$ajax_path   = getinfo('ajax') . base64_encode('plugins/upload_editor/upload-ajax.php');
+	$update_path = getinfo('ajax') . base64_encode('admin/plugins/admin_page/all-files-update-ajax.php');
 
 	// размер
 	$resize_images = (int) mso_get_option('resize_images', 'general', 600);
@@ -164,7 +164,7 @@ EOF;
 						<input id="attach_img" type="file" name="attach" data-url="" multiple>
 						<div class="loader"><img src="'.getinfo('admin_url').'plugins/admin_page/images/loader.gif" width="16" height="11"></div>
 						<div class="uploaded"></div>
-						<div class="inserted"></div>
+						<div class="inserted"></div>              
 					</span>
 				</div>
 			</div>
@@ -173,9 +173,10 @@ EOF;
 		<div id="all-files-result" class="all-files-result">' . t('Загрузка...') . '</div>
 
 		<script type="text/javascript">
-			var sess = "'.$MSO->data['session']['session_id'].'";
-			var upload_path = "'.$ajax_path.'",
-				current_dir = "'.$current_dir.'";
+			var sess = "' . $MSO->data['session']['session_id'] . '";
+			var upload_path = "' . $ajax_path   . '",
+				update_path = "' . $update_path . '",
+				current_dir = "' . $current_dir . '";
 		</script>
 		<script src="'.getinfo('plugins_url').'upload_editor/upload/jquery.ui.widget.js"></script>
 		<script src="'.getinfo('plugins_url').'upload_editor/upload/jquery.iframe-transport.js"></script>
@@ -272,7 +273,7 @@ if (!is_dir($path) ) // нет каталога
 	@mkdir($path . '/mini', 0777);
 }
 
-if (!is_dir($path) ) // каталог не удалось создать
+if (!is_dir($path)) // каталог не удалось создать
 {
 	$all_files = t('Не удалось создать каталог для файлов страницы');
 	return $out . $all_files;
