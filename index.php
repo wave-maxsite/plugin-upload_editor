@@ -175,10 +175,11 @@ EOF;
 				update_path = "' . $update_path . '",
 				current_dir = "' . $current_dir . '";
 		</script>
-		<script src="'.getinfo('plugins_url').'upload_editor/upload/jquery.ui.widget.js"></script>
-		<script src="'.getinfo('plugins_url').'upload_editor/upload/jquery.iframe-transport.js"></script>
-		<script src="'.getinfo('plugins_url').'upload_editor/upload/jquery.fileupload.js"></script>
-		<script src="'.getinfo('plugins_url').'upload_editor/upload/upload.js"></script>
+		<script src="'. getinfo('plugins_url') . 'upload_editor/upload/jquery.ui.widget.js"></script>
+		<script src="'. getinfo('plugins_url') . 'upload_editor/upload/jquery.iframe-transport.js"></script>
+		<script src="'. getinfo('plugins_url') . 'upload_editor/upload/jquery.fileupload.js"></script>
+		<script src="'. getinfo('plugins_url') . 'upload_editor/upload/upload.js"></script>
+		<script src="'. getinfo('plugins_url') . 'comment_smiles/comment_smiles.js"></script>
 
 <script>
 	$(function(){
