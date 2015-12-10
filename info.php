@@ -1,17 +1,17 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed'); 
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 $info = array(
-	'name' => t('Название'),
-	'description' => t('Описание'),
+	'name' => t('Uploads in Editor'),
+	'description' => t('Загрузка файлов на лету без необходимости переходить со страницы редактора на страницу загрузок'),
 	'version' => '1.0',
-	'author' => 'Максим',
-	'plugin_url' => 'http://max-3000.com/',
-	'author_url' => 'http://maxsite.org/',
+	'author' => 'Wave',
+	'plugin_url' => 'http://wave-maxsite.github.io/',
+	'author_url' => 'https://github.com/wave-maxsite/plugin-upload_editor',
 	'group' => 'template',
-	# 'help' => getinfo('plugins_url') . 'pluginX/help.txt', # ссылка на help плагина 
-	
+	# 'help' => getinfo('plugins_url') . 'pluginX/help.txt', # ссылка на help плагина
+
 	# ссылка на свою страницу настроек (только если используется свой admin.php!)
-	# 'options_url' => getinfo('site_admin_url') . 'pluginX_', 
+	# 'options_url' => getinfo('site_admin_url') . 'pluginX_',
 );
 
 # end file
