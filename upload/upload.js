@@ -48,7 +48,7 @@ $(document).ready(function(){
 					$(".attach .uploaded").append("<div class=\"pic err\" name=\""+file.name+"\"><span><b>Ошибка</b>: Файл «<i>"+file.name+"</i>» загружен не был. От сервера получено сообщение - «"+file.error+"»</span><button class=\"drop\" onclick=\"$( 'div[name="+addr+"] ).detach();return false;\">Удалить сообщение</button></div>");
 				}
 			});
-			//$("#all-files-update").click();
+			// Обновляем содержимое файловой панели.
 			$.post(
 				update_path,
 				{

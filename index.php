@@ -33,7 +33,6 @@ function upload_editor_activate($args = array())
 # функция выполняется при деактивации (выкл) плагина
 function upload_editor_deactivate($args = array())
 {
-	// mso_delete_option('plugin_upload_editor', 'plugins' ); // удалим созданные опции
 	return $args;
 }
 
@@ -48,7 +47,6 @@ function upload_editor_uninstall($args = array())
 
 
 # функция отрабатывающая миниопции плагина (function плагин_mso_options)
-# если не нужна, удалите целиком
 function upload_editor_mso_options()
 {
 	if ( !mso_check_allow('upload_editor_upload') )
@@ -73,25 +71,25 @@ function upload_editor_mso_options()
 }
 
 
-# функции плагина
+# Подключаемся на page_new и выводим форму загрузки.
 function upload_editor_js($out)
 {
 	global $MSO;
-	$upload_div = '';
+	$upload_div  = '';
 	$current_dir = mso_get_option('plugin_upload_editor', 'plugins', Array('uploads_temp_folder' => 'tempfiles'));
 	$current_dir = $current_dir['uploads_temp_folder'];
 	$ajax_path   = getinfo('ajax') . base64_encode('plugins/upload_editor/upload-ajax.php');
 	$update_path = getinfo('ajax') . base64_encode('admin/plugins/admin_page/all-files-update-ajax.php');
 
 	// размер
-	$resize_images = (int) mso_get_option('resize_images', 'general', 600);
+	$resize_images   = (int) mso_get_option('resize_images', 'general', 600);
 	// миниатюра
 	$size_image_mini = (int) mso_get_option('size_image_mini', 'general', 150);
 	// тип миниатюры
 	$image_mini_type = mso_get_option('image_mini_type', 'general', 1);
 	// водяной знак
-	$use_watermark = mso_get_option('use_watermark', 'general', 0);
-	$watermark_type = mso_get_option('watermark_type', 'general', 1);
+	$use_watermark   = mso_get_option('use_watermark', 'general', 0);
+	$watermark_type  = mso_get_option('watermark_type', 'general', 1);
 
 	if ($resize_images < 1) $resize_images = 600;
 	if ($size_image_mini < 1) $size_image_mini = 150;
@@ -119,7 +117,6 @@ EOF;
 	}
 
 	$upload_div = '
-
 		<div class="all-files-nav">
 			<a href="' . getinfo('site_admin_url') . 'files/' . $current_dir . '" target="_blank" class="goto-files">' . t('Управление файлами') . '</a>
 			<a href="#" id="all-files-upload" class="all-files-upload">' . t('Загрузить файлы') . '</a>
@@ -283,23 +280,31 @@ if (!is_dir($path)) // каталог не удалось создать
 }
 
 
-# функции плагина
+# Перемещаем файлы на постоянное место и меняем ссылки на них.
 function upload_editor_new_page($arg = array())
 {
-	//$page_content = $data['page_content']; //уже есть этот $page_content
-	$page_id = $arg['0'];
-	global $page_content;
-
-	$current_dir = mso_get_option('plugin_upload_editor', 'plugins', Array('uploads_temp_folder' => 'tempfiles'));
-	$current_dir = $current_dir['uploads_temp_folder'];
+	$current_dir  = mso_get_option('plugin_upload_editor', 'plugins', Array('uploads_temp_folder' => 'tempfiles'));
+	$current_dir  = $current_dir['uploads_temp_folder'];
 	$uploads_temp = $current_dir;
 
-	$current_dir         = '_pages' . '/' . $page_id;
+	$page_id      = $arg['0'];
+	$current_dir  = '_pages' . '/' . $page_id;
 
 	$uploads_temp_url    = getinfo('uploads_url') . $uploads_temp;
 	$uploads_current_url = getinfo('uploads_url') . $current_dir;
 	$uploads_temp_dir    = getinfo('uploads_dir') . $uploads_temp;
 	$uploads_current_dir = getinfo('uploads_dir') . $current_dir;
+
+	$CI = &get_instance();
+	# По-простому контент мы получить не можем, придётся делать запрос в БД.
+	$query = $CI->db->get_where('page', array('page_id' => $page_id), 1);
+	if ($query->num_rows())
+	{
+		foreach ($query->result_array() as $row)
+		{
+			$page_content = $row['page_content'];
+		}
+	}
 
 	# Если в тексте страницы есть ссылка на файл во временном каталоге, меняем на постоянный адрес и обновляем страницу в БД.
 	if (strpos($page_content, $uploads_temp_url) !== false)
@@ -311,21 +316,25 @@ function upload_editor_new_page($arg = array())
 	}
 
 	# Если в метаданных (обычно прикреплённой картинке) есть ссылка на файл…
-	$page_meta_options = isset($data['page_meta_options']) ? $data['page_meta_options'] : '';
-	$page_meta_options = explode('##METAFIELD##', $page_meta_options);
-	foreach ($page_meta_options as $key=>$val)
+	# По-простому мы получить это дело не можем, придётся делать ещё запрос в БД.
+	$CI->db->select('*');
+	$CI->db->where(Array('meta_id_obj' => $page_id, 'meta_table' => 'page'));
+	$query = $CI->db->get('meta');
+	if ($query->num_rows())
 	{
-		if (trim($val))
+		$meta = Array();
+		$ids  = Array();
+		foreach ($query->result_array() as $row)
 		{
-			$meta_temp = explode('##VALUE##', $val);
-			$meta_key = trim($meta_temp[0]);
-			$meta_value = trim($meta_temp[1]);
-			# Если ссылка, обновляем мету. Иначе ничего не делаем
-			if ( strpos($meta_value, $uploads_temp_url) !== false )
+			if (strpos($row['meta_value'], $uploads_temp_url) !== false)
 			{
-				$meta_value = str_replace ($uploads_temp_url, $uploads_current_url, $meta_value);
-				mso_add_meta($meta_key, $page_id, 'page', $meta_value);
+				$row['meta_value'] = str_replace($uploads_temp_url, $uploads_current_url, $row['meta_value']);
+				$meta[] = $row;
 			}
+		}
+		if ($meta)
+		{
+			$CI->db->update_batch('meta', $meta, 'meta_id');
 		}
 	}
 
@@ -347,7 +356,6 @@ function upload_editor_new_page($arg = array())
 		return;
 	}
 
-	$CI = get_instance();
 	$CI->load->helper('file');
 	$tempfiles = get_filenames($uploads_temp_dir);
 
@@ -381,6 +389,8 @@ function upload_editor_new_page($arg = array())
 
 		}
 	}
+	# Если мы после создания страницы переходим на её редактирование, то удаление $sessid . '.sessid' уместно. Иначе бесполезно, но…
+	@unlink($uploads_temp_dir . '/' . $sessid . '.sessid');
 	return $arg;
 }
 
