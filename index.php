@@ -79,7 +79,8 @@ function upload_editor_js($out)
 	global $MSO;
 	$upload_div = '';
 	$upload_btn = '';
-	$current_dir = mso_get_option('uploads_temp_folder', 'general', 'tempfiles');
+	$current_dir = mso_get_option('plugin_upload_editor', 'plugins', Array('uploads_temp_folder' => 'tempfiles'));
+	$current_dir = $current_dir['uploads_temp_folder'];
 	$ajax_path = getinfo('ajax') . base64_encode('plugins/upload_editor/upload-ajax.php');
 
 	// размер
@@ -102,7 +103,7 @@ function upload_editor_js($out)
 		$url = getinfo('plugins_url') . 'lightbox/';
 		$t_izob = t('Изображение');
 		$t_iz = t('из');
-		
+
 		$lightbox = <<<EOF
 var lburl = "{$url}images/";
 $("a.lightbox").lightBox({
@@ -132,7 +133,7 @@ EOF;
 					<input type="text" name="f_userfile_resize_size" style="width: 50px" maxlength="4" value="' . $resize_images . '"> ' . t('px (по максимальной стороне).') . '</p>
 
 				<p><label><input type="checkbox" name="f_userfile_mini" checked="checked" value=""> ' . t('Для изображений сделать миниатюру размером') . '</label>
-					<input type="text" name="f_userfile_mini_size" style="width: 50px" maxlength="4" value="' . $size_image_mini . '"> ' . t('px (по максимальной стороне).') . ' <br><em>' . t('Примечание: миниатюра будет создана в каталоге') . ' <strong>uploads/' . $current_dir . 'mini</strong></em></p>
+					<input type="text" name="f_userfile_mini_size" style="width: 50px" maxlength="4" value="' . $size_image_mini . '"> ' . t('px (по максимальной стороне).') . ' <br><em>' . t('Примечание: миниатюра будет создана в каталоге') . ' <strong>uploads/' . $current_dir . '/mini</strong></em></p>
 
 				<p>' . t('Миниатюру делать путем:') . ' <select name="f_mini_type">
 				<option value="1"'.(($image_mini_type == 1)?(' selected="selected"'):('')).'>' . t('Пропорционального уменьшения') . '</option>
@@ -145,7 +146,7 @@ EOF;
 				</select>
 
 				<p><label><input type="checkbox" name="f_userfile_water" value="" '
-					. ((file_exists(getinfo('uploads_dir') . 'watermark.png')) ? '' : ' disabled="disabled"') 
+					. ((file_exists(getinfo('uploads_dir') . 'watermark.png')) ? '' : ' disabled="disabled"')
 					. ($use_watermark ? (' checked="checked"') : (''))
 					. '> ' . t('Для изображений установить водяной знак') . '</label>
 					<br><em>' . t('Примечание: водяной знак должен быть файлом <strong>watermark.png</strong> и находиться в каталоге') . ' <strong>uploads</strong></em></p>
@@ -216,10 +217,10 @@ EOF;
 			$(window).on("storage", function(e) {
 				var pageId = window.location.pathname.match(/\d+$/)[0],
 					event = e.originalEvent;
-		
+
 				if (event.newValue === pageId) {
 					$("#all-files-result").html("' . t('Обновление...') . '");
-		
+
 					$.post(
 						"' . getinfo('ajax') . base64_encode('admin/plugins/admin_page/all-files-update-ajax.php') . '",
 						{
@@ -266,8 +267,8 @@ if (!is_dir($path) ) // нет каталога
 	}
 
 	// нет каталога, пробуем создать
-	@mkdir($path, 0777); 
-	@mkdir($path . '/_mso_i', 0777); 
+	@mkdir($path, 0777);
+	@mkdir($path . '/_mso_i', 0777);
 	@mkdir($path . '/mini', 0777);
 }
 
@@ -288,7 +289,10 @@ function upload_editor_new_page($arg = array())
 	$page_id = $arg['0'];
 	global $page_content;
 
-	$uploads_temp        = mso_get_option('uploads_temp_folder', 'plugins', 'tempfiles');
+	$current_dir = mso_get_option('plugin_upload_editor', 'plugins', Array('uploads_temp_folder' => 'tempfiles'));
+	$current_dir = $current_dir['uploads_temp_folder'];
+	$uploads_temp = $current_dir;
+
 	$current_dir         = '_pages' . '/' . $page_id;
 
 	$uploads_temp_url    = getinfo('uploads_url') . $uploads_temp;

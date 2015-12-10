@@ -23,7 +23,9 @@ foreach ($_REQUEST as $key => $value)
 	$options[$key] = $value;
 }
 
-$temp_folder = mso_get_option('uploads_temp_folder', 'general', 'tempfiles');
+$current_dir = mso_get_option('plugin_upload_editor', 'plugins', Array('uploads_temp_folder' => 'tempfiles'));
+$current_dir = $current_dir['uploads_temp_folder'];
+$temp_folder = $current_dir;
 $folder = (isset($options['current_dir']) && $options['current_dir']) ? $options['current_dir'] : $temp_folder;
 
 $folder = preg_replace('/[\/\\\]*$/msi', '', $folder); # убираем слеш в конце строки

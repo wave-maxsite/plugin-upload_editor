@@ -1,8 +1,6 @@
 $(document).ready(function(){
 	sessUp();
 
-
-
 	setInterval(function() {
 		sessUp();
 	}, 1000 * 60 * 1);
@@ -50,7 +48,19 @@ $(document).ready(function(){
 					$(".attach .uploaded").append("<div class=\"pic err\" name=\""+file.name+"\"><span><b>Ошибка</b>: Файл «<i>"+file.name+"</i>» загружен не был. От сервера получено сообщение - «"+file.error+"»</span><button class=\"drop\" onclick=\"$( 'div[name="+addr+"] ).detach();return false;\">Удалить сообщение</button></div>");
 				}
 			});
-			$("#all-files-update").click();
+			//$("#all-files-update").click();
+			$.post(
+				update_path,
+				{
+					dir: current_dir
+				},
+				function(data)
+				{
+					$("#all-files-result").html(data);
+					' . $lightbox . '
+					localStorage.clear();
+				}
+			);
 		}
 	});
 
