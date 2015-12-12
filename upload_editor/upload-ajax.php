@@ -156,30 +156,25 @@ if( !( isset($_REQUEST['_method']) && $_REQUEST['_method'] == 'DELETE' ) && !iss
 }
 elseif( isset($_REQUEST['_session']))
 {
-	if (!$is_edit)
+	if ($MSO->data['session']['session_id'] == $_REQUEST['_session'])
 	{
-		if( $MSO->data['session']['session_id'] == $_REQUEST['_session'] && touch(getinfo('uploads_dir').$folder.'/'.$MSO->data['session']['session_id'].".sessid") )
-		{
-			# Время модификации файла маркера сессий было изменено на текущее
-			$res = array('success' => true);
-			//require( getinfo('plugins_dir').'submit_article/clean.php' ); # подключили файл для чистки мусора
-		}
-		else
-		{
-			$res = array('error' => 'Произошла ошибка во время проверки сессии!');
-		}
+		$res = array('error' => 'Истекла сессия пользователя!');
+		json_response($res);
+		die();
 	}
-	else
+	if (!touch(getinfo('uploads_dir') . $folder . '/' . $MSO->data['session']['session_id'] . '.sessid'))
 	{
-		$res = array('success' => true);
+		$res = array('error' => 'Не получилось обновить время маркера сессии!'); // На данный момент в плагине можно игнорировать.
+		json_response($res);
+		die();
 	}
+	$res = array('success' => true);
+	//require( getinfo('plugins_dir').basename(dirname(__FILE__)).'clean.php' ); # чистка мусора
 }
 
-json_response( $res );
-
+json_response($res);
 die();
 
-###
 function json_response( $resp )
 {
 	header('Content-type: application/json');
