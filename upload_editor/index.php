@@ -159,9 +159,9 @@ EOF;
 				<div class="attach unit">
 					<span>
 						<input id="attach_img" type="file" name="attach" data-url="" multiple>
-						<div class="loader"><img src="'.getinfo('admin_url').'plugins/admin_page/images/loader.gif" width="16" height="11"></div>
+						<div class="loader"><img src="' . getinfo('plugins_url') . 'upload_editor/images/loader.gif" width="16" height="11"></div>
 						<div class="uploaded"></div>
-						<div class="inserted"></div>              
+						<div class="inserted"></div>
 					</span>
 				</div>
 			</div>
