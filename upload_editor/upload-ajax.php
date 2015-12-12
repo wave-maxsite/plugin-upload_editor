@@ -156,7 +156,7 @@ if( !( isset($_REQUEST['_method']) && $_REQUEST['_method'] == 'DELETE' ) && !iss
 }
 elseif( isset($_REQUEST['_session']))
 {
-	if ($MSO->data['session']['session_id'] == $_REQUEST['_session'])
+	if ($MSO->data['session']['session_id'] != $_REQUEST['_session'])
 	{
 		$res = array('error' => 'Истекла сессия пользователя!');
 		json_response($res);
