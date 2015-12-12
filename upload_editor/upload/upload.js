@@ -77,12 +77,12 @@ function sessUp()
 		{
 			if( response.error )
 			{
-				var msg = "<div class=\"pic err\">Внимание! Имеются проблемы на сервере! «" + response.error + "»<br></div>";
+				var msg = "<div class=\"error\">Внимание! Имеются проблемы на сервере! «" + response.error + "»<br></div>";
 				$("#all-files-result").html(msg + $("#all-files-result").html());
 			}
 		},
 		error: function(xhr, str){
-			var msg = "<div class=\"pic err\">Внимание! По какой-то причине сервер не доступен!<br>\n Будьте осторожны при попытке сохранить результаты заполнения формы!</div>";
+			var msg = "<div class=\"error\">Внимание! По какой-то причине сервер не доступен!<br>\n Будьте осторожны при попытке сохранить результаты заполнения формы!</div>";
 			$("#all-files-result").html(msg + $("#all-files-result").html());
 		}
 	});
