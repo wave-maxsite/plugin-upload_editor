@@ -89,7 +89,7 @@ if( !( isset($_REQUEST['_method']) && $_REQUEST['_method'] == 'DELETE' ) && !iss
 	if( isset($options['create_mini']) && $options['create_mini'] )
 	{
 		$mso_upload_ar2['userfile_mini'] = true;
-		$mso_upload_ar2['userfile_mini_size'] = ( isset($options['create_mini_size']) && $options['create_mini_size'] <> '' ) ? $options['create_mini_size'] : mso_get_option('size_image_mini', 'general', '600');
+		$mso_upload_ar2['userfile_mini_size'] = ( isset($options['create_mini_size']) && $options['create_mini_size'] <> '' ) ? $options['create_mini_size'] : mso_get_option('size_image_mini', 'general', '150');
 		$mso_upload_ar2['mini_type'] = ( isset($options['image_mini_type']) && $options['image_mini_type'] <> '' ) ? $options['image_mini_type'] : mso_get_option('image_mini_type', 'general', '1');
 	}
 

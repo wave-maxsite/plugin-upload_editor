@@ -119,7 +119,7 @@ EOF;
 	$upload_div = '
 		<div class="all-files-nav">
 			<a href="' . getinfo('site_admin_url') . 'files/' . $current_dir . '" target="_blank" class="goto-files">' . t('Управление файлами') . '</a>
-			<a href="#" id="all-files-upload" class="all-files-upload">' . t('Загрузить файлы') . '</a>
+			<a href="#" id="all-files-upload" class="all-files-upload">' . t('Быстрая загрузка') . '</a>
 		</div>
 
 		<div id="all-files-upload-panel" style="display: none;">
